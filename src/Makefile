@@ -11,6 +11,9 @@ LIBS = -lm
 CC = cc
 OUTFILE = frp.new
 
+CFLAGS += `pkg-config --cflags glib-2.0`
+LIBS += `pkg-config --libs glib-2.0`
+
 OBJECTS = global.o main.o files1.o files2.o files3.o bank.o command1.o command2.o \
 	  command3.o command4.o command5.o command6.o command7.o \
 	  command8.o command9.o command10.o command11.o command12.o magic1.o magic2.o \
@@ -18,6 +21,10 @@ OBJECTS = global.o main.o files1.o files2.o files3.o bank.o command1.o command2.
 	 dm1.o dm2.o dm3.o dm4.o dm5.o dm6.o io.o \
 	  player.o creature.o room.o object.o update.o post.o action.o misc.o \
 	  special1.o compress.o alias.o board.o
+
+HEADERS := $(wildcard *.h)
+
+SOURCES = $(patsubst %.o, %.c, $(OBJECTS))
 
 $(OUTFILE): $(OBJECTS)
 	$(CC) $(CFLAGS) $(OBJECTS) -o $(OUTFILE) $(LIBS)
@@ -40,3 +47,6 @@ fing: finger.o
 	$(CC) finger.o -o fing
 	mv fing ../bin
 
+include Makefile.dep
+Makefile.dep: $(SOURCES) $(HEADERS)
+	gcc $(CFLAGS) -M $(SOURCES) > $@ || (rm -f $@; false)
