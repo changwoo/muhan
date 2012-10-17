@@ -768,8 +768,8 @@ cmd		*cmnd;
 		return(DOPROMPT);
 	}
 
-	else if(!strcmp(cmnd->str[1], "관리")) {
-		strcat(file, "/관리");
+	else if(!strcmp(cmnd->str[1], "admin")) {
+		strcat(file, "/admin");
 		view_file(fd, 1, file);
 		return(DOPROMPT);
 	}
