@@ -11,10 +11,13 @@ OSFLAG = LINUX
 ifeq ($(OSFLAG), LINUX)
 
 # linux options
-CFLAGS = -m486 -O2
+CFLAGS = -O2
 LIBS = -lm -s
 CC = cc
 RM = rm
+
+CFLAGS += `pkg-config --cflags glib-2.0`
+LIBS += `pkg-config --libs glib-2.0`
 
 else
 
