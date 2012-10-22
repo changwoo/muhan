@@ -8,6 +8,7 @@
  */
 
 #include "mtype.h"
+#include <stdint.h>
 
 typedef struct obj_tag {		/* Object list tags */
 	struct obj_tag 	*next_tag;
@@ -32,7 +33,7 @@ typedef struct ext_tag {		/* Exit list tags */
 typedef struct enm_tag {		/* Enemy list tags */
 	struct enm_tag	*next_tag;
 	char		enemy[80];
-	int		damage;
+	int32_t		damage;
 } etag;
 
 typedef struct tlk_tag {		/* Talk list tags */
@@ -47,12 +48,12 @@ typedef struct tlk_tag {		/* Talk list tags */
 typedef struct daily {			/* Daily-use operation struct */
 	char		max;
 	char		cur;
-	long		ltime;
+	int32_t		ltime;
 } daily;
 
 typedef struct lasttime {		/* Timed operation struct */
-	long		interval;
-	long		ltime;
+	int32_t		interval;
+	int32_t		ltime;
 	short		misc;
 } lasttime;
 
@@ -63,10 +64,10 @@ typedef struct iobuf {			/* I/O buffers for players */
 	short		ohead, otail;
 	void		(*fn)();
 	char		fnparam;
-	long		ltime;
+	int32_t		ltime;
 	char		intrpt;
 	char		commands;
-	int		lookup_pid;
+	int32_t		lookup_pid;
 	char		address[40];
 	char		userid[9];
 } iobuf;
@@ -85,19 +86,19 @@ typedef struct lockout {
 } lockout;
 
 typedef struct cmd {
-	int		num;
+	int32_t		num;
 	char		fullstr[256];
 	char		str[COMMANDMAX][25];
-	long		val[COMMANDMAX];
+	int32_t		val[COMMANDMAX];
 } cmd;
 
 typedef struct osp_t {
-	int	splno;
+	int32_t	splno;
 	char	realm;
-	int	mp;
-	int	ndice;
-	int	sdice;
-	int	pdice;
+	int32_t	mp;
+	int32_t	ndice;
+	int32_t	sdice;
+	int32_t	pdice;
 	char	bonus_type;
 } osp_t;
 
@@ -114,7 +115,7 @@ typedef struct object {
 	char		description[80];
 	char		key[3][20];
 	char		use_output[80];	/* String output by successful use */
-	long 		value;
+	int32_t 		value;
 	short 		weight;
 	char 		type;
 	char		adjustment;
@@ -153,8 +154,8 @@ typedef struct room {
 	char		traffic;	/* R. monster traffic */
 	struct lasttime	perm_mon[10];	/* Permanent/reappearing monsters */
 	struct lasttime	perm_obj[10];	/* Permanent/reappearing items */
-	long		beenhere;	/* # times room visited */
-	long		established;	/* Time room was established */
+	int32_t		beenhere;	/* # times room visited */
+	int32_t		established;	/* Time room was established */
 	xtag		*first_ext;	/* Exits */
 	otag		*first_obj;	/* Items */
 	ctag		*first_mon;	/* Monsters */
@@ -185,14 +186,14 @@ typedef struct creature {
 	short		mpcur;
 	char		armor;		/* Armor Class */
 	char		thaco;		/* Thac0 */
-	long		experience;
-	long		gold;
+	int32_t		experience;
+	int32_t		gold;
 	short		ndice;		/* Bare-handed damage */
 	short		sdice;
 	short		pdice;
 	short		special;
-	long		proficiency[5]; /* Weapon proficiencies */
-	long		realm[4];	/* Magic Spell realms */
+	int32_t		proficiency[5]; /* Weapon proficiencies */
+	int32_t		realm[4];	/* Magic Spell realms */
 	char		spells[16];	/* Known spells */
 	char		flags[8];
 	char		quests[16];	/* Quests fulfilled (P) */
@@ -219,7 +220,7 @@ typedef struct creature {
     /*          1    +     1    + 2 + 4    = 8
               뒤에 4바이트가 오기때문에 공백으로 2바이트를 넣습니다. */
 /*
-    long __garbage[256];
+    int32_t __garbage[256];
 */
 } creature;
 
