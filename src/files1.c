@@ -388,7 +388,7 @@ object 	*obj_ptr;
 	if(obj_ptr->shotscur > obj_ptr->shotsmax)
 		obj_ptr->shotscur = obj_ptr->shotsmax;
 
-	n = read(fd, &cnt, sizeof(int));
+	n = read(fd, &cnt, sizeof(int32_t));
 	if(n < sizeof(int)) {
 		error = 1;
 		cnt = 0;
@@ -457,7 +457,7 @@ creature 	*crt_ptr;
 	if(crt_ptr->hpcur > crt_ptr->hpmax)
 		crt_ptr->hpcur = crt_ptr->hpmax;
 
-	n = read(fd, &cnt, sizeof(int));
+	n = read(fd, &cnt, sizeof(int32_t));
 	if(n < sizeof(int)) {
 		error = 1;
 		cnt = 0;
@@ -504,7 +504,8 @@ int read_rom(fd, rom_ptr)
 int 	fd;
 room 	*rom_ptr;
 {
-	int		n, cnt, error=0;
+	int		n, error=0;
+        int32_t		cnt;
 	xtag		*xp;
 	xtag		**xprev;
 	exit_		*ext;
@@ -528,8 +529,8 @@ room 	*rom_ptr;
 	rom_ptr->first_mon = 0;
 	rom_ptr->first_ply = 0;
 
-	n = read(fd, &cnt, sizeof(int));
-	if(n < sizeof(int)) {
+	n = read(fd, &cnt, sizeof(int32_t));
+	if(n < sizeof(int32_t)) {
 		error = 1;
 		cnt = 0;
 	}
@@ -560,7 +561,7 @@ room 	*rom_ptr;
 
 	/* Read the monsters */
 
-	n = read(fd, &cnt, sizeof(int));
+	n = read(fd, &cnt, sizeof(int32_t));
 	if(n < sizeof(int)) {
 		error = 1;
 		cnt = 0;
@@ -590,7 +591,7 @@ room 	*rom_ptr;
 
 	/* Read the items */
 
-	n = read(fd, &cnt, sizeof(int));
+	n = read(fd, &cnt, sizeof(int32_t));
 	if(n < sizeof(int)) {
 		error = 1;
 		cnt = 0;
@@ -620,7 +621,7 @@ room 	*rom_ptr;
 
 	/* Read the descriptions */
 
-	n = read(fd, &cnt, sizeof(int));
+	n = read(fd, &cnt, sizeof(int32_t));
 	if(n < sizeof(int)) {
 		error = 1;
 		cnt = 0;
@@ -638,7 +639,7 @@ room 	*rom_ptr;
 			merror("read_rom", FATAL);
 	}
 
-	n = read(fd, &cnt, sizeof(int));
+	n = read(fd, &cnt, sizeof(int32_t));
 	if(n < sizeof(int)) {
 		error = 1;
 		cnt = 0;
@@ -656,7 +657,7 @@ room 	*rom_ptr;
 			merror("read_rom", FATAL);
 	}
 
-	n = read(fd, &cnt, sizeof(int));
+	n = read(fd, &cnt, sizeof(int32_t));
 	if(n < sizeof(int)) {
 		error = 1;
 		cnt = 0;
