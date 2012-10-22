@@ -29,6 +29,8 @@
 #endif
 #include <errno.h>
 #include <string.h>
+#include <stdarg.h>
+#include <assert.h>
 #include "mstruct.h"
 #include "mextern.h"
 
@@ -147,8 +149,8 @@ int	debug;
 		FD_SET(2, &Sockets);
 	}
 #ifndef WIN32
-	signal(SIGPIPE, SIG_IGN);
-	signal(SIGTERM, SIG_IGN);
+	//signal(SIGPIPE, SIG_IGN);
+	//signal(SIGTERM, SIG_IGN);
 	signal(SIGCHLD, child_died);
 
 	Tablesize = getdtablesize();
@@ -590,16 +592,22 @@ void output_buf()
 /* formatted text string to a given socket's output buffer.  The  */
 /* socket number is the first parameter.			  */
 
-void print(fd, fmt, i1, i2, i3, i4, i5, i6)
-int 	fd;
-unsigned char 	*fmt;
-int	i1, i2, i3, i4, i5, i6;
+extern void print(int fd, char *fmt, ...)
+{
+    va_list ap;
+
+    va_start(ap, fmt);
+    vprint(fd, fmt, ap);
+    va_end(ap);
+}
+
+extern void vprint(int fd, char *fmt, va_list ap)
 {
 	char 	msg[3072];
+        char    *pmsg;
 	char	*fmt2;
 	int	i = 0, j = 0, k, n, otail, ohead;
-	int	num, loc, ind = -1, len, flags = 0;
-	int	arg[8];
+	int	num, loc, len, flags = 0;
 	char	type;
 	char	*prestr;
 	char	*Josa[6][2]={ {"은","는",},{"이","가",},{"과","와",},{"을","를",},{"으로","로",},};
@@ -625,8 +633,7 @@ int	i1, i2, i3, i4, i5, i6;
 	if(!fmt2)
 		merror("print", FATAL);
 
-	arg[0] = i1; arg[1] = i2; arg[2] = i3; 
-	arg[3] = i4; arg[4] = i5; arg[5] = i6;
+        pmsg = &msg;
 
 	/* Check for %m, %M, %i and %I and modify arguments as necessary */
 	do {
@@ -650,68 +657,106 @@ int	i1, i2, i3, i4, i5, i6;
 				i++; i++;
 				continue;
 			}
-			ind++;
 			if(type != 'm' && type != 'M' && type != 'j' &&
 			   type != 'i' && type != 'I' && type !='S' && type !='D' && type!='C') {
 				i++;
-				continue;
+
+                                if ((type == 'd') || (type == 's') || (type == 'c')) {
+                                    int l;
+                                    for (l = i; l <= k; l++) 
+                                        fmt2[j++] = fmt[l];
+                                    fmt2[j] = '\0';
+
+                                    if (type == 'd') {
+                                        int arg_d;
+                                        arg_d = va_arg(ap, int);
+                                        fprintf(stderr, "fmt: %s, int: %d\n", fmt2, arg_d);
+                                        sprintf(pmsg, fmt2, arg_d);
+                                    } else if (type == 's') {
+                                        char *arg_s;
+                                        arg_s = va_arg(ap, char *);
+                                        fprintf(stderr, "fmt: %s, str: %s\n", fmt2, arg_s);
+                                        sprintf(pmsg, fmt2, arg_s);
+                                    } else if (type == 'c') {
+                                        int arg_d;
+                                        arg_d = va_arg(ap, int);
+                                        fprintf(stderr, "fmt: %s, char: %c\n", fmt2, arg_d);
+                                        sprintf(pmsg, fmt2, (char)arg_d);
+                                    }
+
+                                    pmsg += strlen(pmsg);
+                                    j = 0;
+                                }
+
+                                continue;
 			}
 
 			i = loc + 1;
 			fmt2[j++] = 's';
 
+                        int arg_d;
+                        char *arg_s;
+                        arg_s = va_arg(ap, char *);
+
 			switch(type) {
 			case 'm':
-				arg[ind] = (int)(prestr=crt_str(arg[ind], num, flags|CAP));
-				continue;
+				arg_s = (prestr=crt_str(arg_s, num, flags|CAP));
+				break;
 			case 'M':
-				arg[ind] = (int)(prestr=crt_str(arg[ind], num, flags));
-				continue;
+				arg_s = (prestr=crt_str(arg_s, num, flags));
+				break;
 			case 'S':
-				prestr=(char *)arg[ind];
-				continue;
+				prestr=(char *)arg_s;
+				break;
 			case 'j':
-				switch(*((char *)arg[ind])) {
+				switch(*((char *)arg_s)) {
 					case '0':
 					case '1':
 					case '2':
 					case '3':
 					case '4':
-						if(under_han(prestr)) arg[ind]=(int)Josa[*((char *)arg[ind])-'0'][0];
-						else arg[ind] = (int)Josa[*((char *)arg[ind])-'0'][1];
+						if(under_han(prestr)) arg_s=Josa[*((char *)arg_s)-'0'][0];
+						else arg_s = Josa[*((char *)arg_s)-'0'][1];
 						break;
-					default: arg[ind]= (int)"";
+					default: arg_s= "";
 				}
-				continue;
+				break;
 			case 'i':
 			case 'I':
-				arg[ind] = (int)(prestr=obj_str(arg[ind], num, flags));
-				continue;
+				arg_s = (prestr=obj_str(arg_s, num, flags));
+				break;
                          case 'C':
                               if(F_ISSET(Ply[fd].ply,PANSIC)) {
                                   sprintf(color_buf1,"%c[%d;%sm",27,
-(F_ISSET(Ply[fd].ply,PBRIGH)&&atoi((char *)arg[ind])!=WHITE)?1:0,
-(char *)arg[ind]);
-                                  arg[ind]=(int)color_buf1;
-                              } else arg[ind]= (int)"";
-                              continue;
+(F_ISSET(Ply[fd].ply,PBRIGH)&&atoi((char *)arg_s)!=WHITE)?1:0,
+(char *)arg_s);
+                                  arg_s=color_buf1;
+                              } else arg_s= "";
+                              break;
                          case 'D':
                               if(F_ISSET(Ply[fd].ply,PANSIC)) {
                                   sprintf(color_buf2,"%c[%d;%sm",27,
-(F_ISSET(Ply[fd].ply,PBRIGH)&&atoi((char *)arg[ind])!=WHITE)?1:0,
-(char *)arg[ind]);
-                                  arg[ind]=(int)color_buf2;
-                            } else arg[ind]= (int)"";
-                            continue;
+(F_ISSET(Ply[fd].ply,PBRIGH)&&atoi((char *)arg_s)!=WHITE)?1:0,
+(char *)arg_s);
+                                  arg_s=color_buf2;
+                            } else arg_s= "";
+                            break;
 			}
+
+                        fmt2[j] = '\0';
+                        sprintf(pmsg, fmt2, arg_s);
+                        pmsg += strlen(pmsg);
+                        j = 0;
+                        continue;
 		}
 		fmt2[j++] = fmt[i++];
 	} while (i < len);
 
 	fmt2[j] = 0;
+        strcpy(pmsg, fmt2);
 
-	sprintf(msg, fmt2, arg[0], arg[1], arg[2], arg[3], arg[4], arg[5]);
 	free(fmt2);
+
 	n = strlen(msg);
 	if(n > 78 && title_cut_index[fd]==0) {
 		delimit(msg);
@@ -893,10 +938,10 @@ int 	fd;
 /* game.  If they have the NO-BROADCAST flag set, then they will not see */
 /* it.									 */
 
-void broadcast(fmt, i1, i2, i3, i4, i5, i6)
-char 	*fmt;
-int	i1, i2, i3, i4, i5, i6;
+void broadcast(char *fmt, ...)
 {
+	va_list ap;
+
 	char	fmt2[1024];
 	int	i;
 
@@ -904,30 +949,36 @@ int	i1, i2, i3, i4, i5, i6;
 /*  strcat(fmt2, "\n"); */
 	for(i=0; i<Tablesize; i++) {
 		if(FD_ISSET(i, &Sockets) && Ply[i].ply)
-			if(!F_ISSET(Ply[i].ply, PNOBRD) && Ply[i].ply->fd > -1)
-				print(i, fmt2, i1, i2, i3, i4, i5, i6);
+			if(!F_ISSET(Ply[i].ply, PNOBRD) && Ply[i].ply->fd > -1) {
+				va_start(ap, fmt);
+				vprint(i, fmt2, ap);
+				va_end(ap);
+			}
 	}
 }
 
-void broadcast2(fmt, i1, i2, i3, i4, i5, i6)
-char 	*fmt;
-int	i1, i2, i3, i4, i5, i6;
+void broadcast2(char *fmt, ...)
 {
+	va_list ap;
+
 	char	fmt2[1024];
 	int	i;
 
 	strcpy(fmt2, fmt);
 	for(i=0; i<Tablesize; i++) {
 		if(FD_ISSET(i, &Sockets) && Ply[i].ply)
-			if(!F_ISSET(Ply[i].ply, PNOBR2) && Ply[i].ply->fd > -1)
-				print(i, fmt2, i1, i2, i3, i4, i5, i6);
+			if(!F_ISSET(Ply[i].ply, PNOBR2) && Ply[i].ply->fd > -1) {
+				va_start(ap, fmt);
+				vprint(i, fmt2, ap);
+				va_end(ap);
+			}
 	}
 }
 
-void broadcast_all(fmt, i1, i2, i3, i4, i5, i6)
-char 	*fmt;
-int	i1, i2, i3, i4, i5, i6;
+void broadcast_all(char *fmt, ...)
 {
+	va_list ap;
+
 	char	fmt2[1024];
 	int	i;
 
@@ -935,8 +986,11 @@ int	i1, i2, i3, i4, i5, i6;
 /*  strcat(fmt2, "\n"); */
 	for(i=0; i<Tablesize; i++) {
 		if(FD_ISSET(i, &Sockets) && Ply[i].ply)
-			if(Ply[i].ply->fd > -1)
-				print(i, fmt2, i1, i2, i3, i4, i5, i6);
+			if(Ply[i].ply->fd > -1) {
+				va_start(ap, fmt);
+				vprint(i, fmt2, ap);
+				va_end(ap);
+			}
 	}
 }
 
@@ -947,10 +1001,10 @@ int	i1, i2, i3, i4, i5, i6;
 /* This function broadcasts a message to all the DM's who are on at the */
 /* time.								*/
 
-void broadcast_wiz(fmt, i1, i2, i3, i4, i5, i6)
-char 	*fmt;
-int	i1, i2, i3, i4, i5, i6;
+void broadcast_wiz(char *fmt, ...)
 {
+	va_list ap;
+
 	char	fmt2[1024];
 	int	i;
 
@@ -960,7 +1014,9 @@ int	i1, i2, i3, i4, i5, i6;
 		if(FD_ISSET(i, &Sockets) && Ply[i].ply)
 			if(Ply[i].ply->fd > -1 && Ply[i].ply->class >= CARETAKER){
 				ANSI(i,YELLOW);
-				print(i, fmt2, i1, i2, i3, i4, i5, i6); 
+                                va_start(ap, fmt);
+				vprint(i, fmt2, ap);
+                                va_end(ap);
 				ANSI(i,WHITE);
 			}
 	}
@@ -973,10 +1029,10 @@ int	i1, i2, i3, i4, i5, i6;
 /* This function broadcasts a message to all the DM's who are on at the */
 /* time and have the eavesdropping flag set.			 	*/
 
-void broadcast_eaves(fmt, i1, i2, i3, i4, i5, i6)
-char 	*fmt;
-int	i1, i2, i3, i4, i5, i6;
+void broadcast_eaves(char *fmt, ...)
 {
+	va_list ap;
+
 	char	fmt2[1024];
 	int	i;
 
@@ -986,8 +1042,11 @@ int	i1, i2, i3, i4, i5, i6;
 		if(FD_ISSET(i, &Sockets) && Ply[i].ply)
 			if(Ply[i].ply->fd > -1 &&
 			   Ply[i].ply->class > CARETAKER && 
-			   F_ISSET(Ply[i].ply, PEAVES))
-				print(i, fmt2, i1, i2, i3, i4, i5, i6);
+			   F_ISSET(Ply[i].ply, PEAVES)) {
+                                va_start(ap, fmt);
+				vprint(i, fmt2, ap);
+                                va_end(ap);
+                        }
 	}
 }
 
@@ -1000,11 +1059,10 @@ int	i1, i2, i3, i4, i5, i6;
 /* is greater than -1, then if the player specified by that file     */
 /* descriptor is present in the room, he is not given the message    */
 
-void broadcast_rom(ignore, rm, fmt, i1, i2, i3, i4, i5, i6)
-int	ignore, rm;
-char 	*fmt;
-int	i1, i2, i3, i4, i5, i6;
+void broadcast_rom(int ignore, int rm, char *fmt, ...)
 {
+	va_list ap;
+
 	char	fmt2[1024];
 	int	i;
 
@@ -1013,8 +1071,11 @@ int	i1, i2, i3, i4, i5, i6;
 	for(i=0; i<Tablesize; i++) {
 		if(FD_ISSET(i, &Sockets) && Ply[i].ply)
 			if(Ply[i].ply->rom_num == rm && Ply[i].ply->fd > -1
-			   && i != ignore )
-				print(i, fmt2, i1, i2, i3, i4, i5, i6);
+			   && i != ignore ) {
+                                va_start(ap, fmt);
+				vprint(i, fmt2, ap);
+                                va_end(ap);
+			}
 	}
 }
 
@@ -1025,11 +1086,10 @@ int	i1, i2, i3, i4, i5, i6;
 /* This function is the same as broadcast_rom except that it will ignore */
 /* two people in a room.						 */
 
-void broadcast_rom2(ignore1, ignore2, rm, fmt, i1, i2, i3, i4, i5, i6)
-int	ignore1, ignore2, rm;
-char 	*fmt;
-int	i1, i2, i3, i4, i5, i6;
+void broadcast_rom2(int ignore1, int ignore2, int rm, char *fmt, ...)
 {
+	va_list ap;
+
 	char	fmt2[1024];
 	int	i;
 
@@ -1038,8 +1098,11 @@ int	i1, i2, i3, i4, i5, i6;
 	for(i=0; i<Tablesize; i++) {
 		if(FD_ISSET(i, &Sockets) && Ply[i].ply)
 			if(Ply[i].ply->rom_num == rm && Ply[i].ply->fd > -1
-			   && i != ignore1 && i != ignore2)
-				print(i, fmt2, i1, i2, i3, i4, i5, i6);
+			   && i != ignore1 && i != ignore2) {
+                                va_start(ap, fmt);
+				vprint(i, fmt2, ap);
+                                va_end(ap);
+                        }
 	}
 }
 

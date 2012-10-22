@@ -191,10 +191,10 @@ char *buf;
 
 /* Log debugging information if necessary.				*/
 
-void log_f(fmt, i1, i2, i3, i4, i5, i6, i7, i8, i9, i10)
-char    *fmt;
-int     i1, i2, i3, i4, i5, i6, i7, i8, i9, i10;
+void log_f(char *fmt, ...)
 {
+	va_list ap;
+
         char    file[80];
         char    str[1024];
         int     fd;
@@ -207,7 +207,9 @@ int     i1, i2, i3, i4, i5, i6, i7, i8, i9, i10;
         }
         lseek(fd, 0L, 2);
 
-        sprintf(str, fmt, i1, i2, i3, i4, i5, i6, i7, i8, i9, i10);
+	va_start(ap, fmt);
+	vsprintf(str, fmt, ap);
+	va_end(ap);
 
         write(fd, str, strlen(str));
 

@@ -132,10 +132,17 @@ extern void drop_all_bank(), get_all_bank();
 extern int	io_check(), accept_input(), locked_out(), addr_equal(),
 		remove_wait();
 extern void	sock_init(), sock_loop(), accept_connect(), output_buf(), 
-		print(), handle_commands(), disconnect(), broadcast(), broadcast2(), 
-		broadcast_all(), broadcast_wiz(), broadcast_rom(), broadcast_rom2(),
-		broadcast_robot_rom(), add_wait(), init_connect(),
+		handle_commands(), disconnect(), add_wait(), init_connect(),
 		waiting(), child_died(), reap_children();
+
+extern void print(int fd, char *fmt, ...);
+extern void broadcast(char *fmt, ...);
+extern void broadcast2(char *fmt, ...);
+extern void broadcast_all(char *fmt, ...);
+extern void broadcast_wiz(char *fmt, ...);
+extern void broadcast_eaves(char *fmt, ...);
+extern void broadcast_rom(int ignore, int rm, char *fmt, ...);
+extern void broadcast_rom2(int ignore1, int ignore2, int rm, char *fmt, ...);
 
 /* COMMAND1.C */
 
@@ -367,11 +374,14 @@ extern int	action();
 
 /* MISC.C */
 
-extern void	merror(), lowercize(), zero(), delimit(), view_file(), log_f(),
-		sort_cmds(), load_lockouts(), please_wait(), logn();
+extern void	merror(), lowercize(), zero(), delimit(), view_file(),
+		sort_cmds(), load_lockouts(), please_wait();
 extern int	low(), up(), dice(), exp_to_lev(), dec_daily(), sort_cmp(),
 		file_exists(), isnumber();
 extern char	*crt_str(), *obj_str();
+
+extern void log_f(char *fmt, ...);
+extern void logn(char *name, char *fmt, ...);
 
 /* SPECIAL1.C */
 

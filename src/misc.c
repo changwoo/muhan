@@ -12,6 +12,7 @@
 #include "mextern.h"
 #include <stdio.h>
 #include <sys/types.h>
+#include <stdarg.h>
 
 #ifndef WIN32
 #else
@@ -525,10 +526,10 @@ struct daily	*dly_ptr;
 /* This function writes a formatted printf string to a log_file called	*/
 /* "log" in the player directory.					*/
 
-void log_f(fmt, i1, i2, i3, i4, i5, i6, i7, i8, i9, i10)
-char 	*fmt;
-int	i1, i2, i3, i4, i5, i6, i7, i8, i9, i10;
+void log_f(char *fmt, ...)
 {
+	va_list ap;
+
 	char	file[80];
 	char	str[1024];
 	int	fd;
@@ -541,7 +542,9 @@ int	i1, i2, i3, i4, i5, i6, i7, i8, i9, i10;
 	}
 	lseek(fd, 0L, 2);
 
-	sprintf(str, fmt, i1, i2, i3, i4, i5, i6, i7, i8, i9, i10);
+	va_start(ap, fmt);
+	vsprintf(str, fmt, ap);
+	va_end(ap);
 
 	write(fd, str, strlen(str));
 
@@ -549,10 +552,10 @@ int	i1, i2, i3, i4, i5, i6, i7, i8, i9, i10;
 
 }
 
-void log_dm(fmt, i1, i2, i3, i4, i5, i6, i7, i8, i9, i10)
-char 	*fmt;
-int  i1, i2, i3, i4, i5, i6, i7, i9, i10;
+void log_dm(char *fmt, ...)
 {
+	va_list ap;
+    
 	char file[80];
 	char str[1024];
 	int fd;
@@ -565,15 +568,17 @@ int  i1, i2, i3, i4, i5, i6, i7, i9, i10;
 	}
 	lseek(fd, 0L, 2);
 
-	sprintf(str, fmt, i1, i2, i3, i4, i5, i6, i7, i8, i9, i10);
+	va_start(ap, fmt);
+	vsprintf(str, fmt, ap);
+	va_end(ap);
 	write(fd, str, strlen(str));
 	close(fd);
 }
 
-void log_dmcmd(fmt, i1, i2, i3, i4, i5, i6, i7, i8, i9, i10)
-char 	*fmt;
-int  i1, i2, i3, i4, i5, i6, i7, i9, i10;
+void log_dmcmd(char *fmt, ...)
 {
+	va_list ap;
+    
 	char file[80];
 	char str[1024],str2[1024];
 	int fd;
@@ -591,7 +596,9 @@ int  i1, i2, i3, i4, i5, i6, i7, i9, i10;
 	strcpy(str2,(char *)ctime(&t));
 	str2[strlen(str2)-1] = 0;
 	strcat(str2," : ");
-	sprintf(str, fmt, i1, i2, i3, i4, i5, i6, i7, i8, i9, i10);
+	va_start(ap, fmt);
+	vsprintf(str, fmt, ap);
+	va_end(ap);
 	write(fd, str2, strlen(str2));
 	write(fd, str, strlen(str));
 	close(fd);
@@ -746,11 +753,10 @@ int	duration;
 /* This function writes a formatted printf string to a log_file called   */
 /* "log" in the player directory.                                       */
  
-void logn(name,fmt, i1, i2, i3, i4, i5, i6, i7, i8, i9, i10)
-char    *name;
-char    *fmt;
-int     i1, i2, i3, i4, i5, i6, i7, i8, i9, i10;
+void logn(char *name, char *fmt, ...)
 {
+	va_list ap;
+
 	char    file[80];
         char    str[1024];
         int     fd;
@@ -763,18 +769,19 @@ int     i1, i2, i3, i4, i5, i6, i7, i8, i9, i10;
         }
         lseek(fd, 0L, 2);
  
-        sprintf(str, fmt, i1, i2, i3, i4, i5, i6, i7, i8, i9, i10);
+	va_start(ap, fmt);
+	vsprintf(str, fmt, ap);
+	va_end(ap);
  
         write(fd, str, strlen(str));
  
         close(fd);
 }
 
-void log_overwrite(name,fmt,i1,i2,i3,i4,i5,i6)
-char *name;
-char *fmt;
-int i1,i2,i3,i4,i5,i6;
+void log_overwrite(char *name, char *fmt, ...)
 {
+    va_list ap;
+
     char file[80];
     char str[1024];
     int fd;
@@ -785,7 +792,9 @@ int i1,i2,i3,i4,i5,i6;
 
     lseek(fd,0L,2);
 
-    sprintf(str,fmt,i1,i2,i3,i4,i5,i6);
+    va_start(ap, fmt);
+    vsprintf(str,fmt,ap);
+    va_end(ap);
     write(fd,str,strlen(str));
     close(fd);
 }
@@ -805,10 +814,10 @@ char    *str;
 }
 /*====================================================================*/
 
-void log_pl(fmt, i1, i2, i3, i4, i5, i6, i7, i8, i9, i10)
-char    *fmt;
-int  i1, i2, i3, i4, i5, i6, i7, i9, i10;
+void log_pl(char *fmt, ...)
 {
+    va_list ap;
+
     char file[80];
     char str[1024];
     int fd;
@@ -821,15 +830,17 @@ int  i1, i2, i3, i4, i5, i6, i7, i9, i10;
     }
     lseek(fd, 0L, 2);
 
-    sprintf(str, fmt, i1, i2, i3, i4, i5, i6, i7, i8, i9, i10);
+    va_start(ap, fmt);
+    vsprintf(str, fmt, ap);
+    va_end(ap);
     write(fd, str, strlen(str));
     close(fd);
 }
 
-void log_plcmd(fmt, i1, i2, i3, i4, i5, i6, i7, i8, i9, i10)
-char    *fmt;
-int  i1, i2, i3, i4, i5, i6, i7, i9, i10;
+void log_plcmd(char *fmt, ...)
 {
+    va_list ap;
+
     char file[80];
     char str[1024];
     int fd;
@@ -841,7 +852,9 @@ int  i1, i2, i3, i4, i5, i6, i7, i9, i10;
     }
     lseek(fd, 0L, 2);
 
-    sprintf(str, fmt, i1, i2, i3, i4, i5, i6, i7, i8, i9, i10);
+    va_start(ap, fmt);
+    vsprintf(str, fmt, ap);
+    va_end(ap);
     write(fd, str, strlen(str));
     close(fd);
 }
