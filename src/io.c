@@ -688,6 +688,7 @@ extern void vprint(int fd, char *fmt, va_list ap)
 
                                     pmsg += strlen(pmsg);
                                     j = 0;
+                                    i = k + 1;
                                 }
 
                                 continue;
