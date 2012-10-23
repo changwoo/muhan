@@ -1,0 +1,6 @@
+*.o
+*~
+Makefile.dep
+bin/frp
+src/frp.new
+util/ed/editor
