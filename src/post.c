@@ -9,8 +9,11 @@
 
 #include "mstruct.h"
 #include "mextern.h"
+#include <stdlib.h>
+#include <string.h>
 #include <sys/stat.h>
 #include <sys/types.h>
+#include <time.h>
 
 #ifdef WIN32
 
@@ -100,7 +103,7 @@ char	*str;
 
 	if(param == 1) {
 		time(&t);
-		strcpy(datestr, (char *)ctime(&t));
+		strcpy(datestr, ctime(&t));
 		datestr[strlen(datestr)-1] = 0;
 		sprintf(outstr, "\n---\n%s (%s)님에게서의 편지:\n\n",
 		    Ply[fd].ply->name, datestr);

@@ -9,6 +9,8 @@
 
 #include "mstruct.h"
 #include "mextern.h"
+#include <stdlib.h>
+#include <string.h>
 
 /**********************************************************************/
 /*				add_ply_rom			      */

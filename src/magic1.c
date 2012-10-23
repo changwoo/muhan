@@ -11,6 +11,7 @@
 #include "mstruct.h"
 #include "mextern.h"
 #include "board.h"
+#include <string.h>
 
 /**********************************************************************/
 /*              cast                      */

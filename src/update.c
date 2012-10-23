@@ -10,6 +10,8 @@
 #include "mstruct.h"
 #include "mextern.h"
 #include "update.h"
+#include <stdlib.h>
+#include <string.h>
 
 static long last_update;
 static long last_user_update;
@@ -70,7 +72,7 @@ void update_game()
 #ifdef RECORD_ALL
     if(t- last_allcmd >= 300)
  	update_allcmd(t);
-#endif RECORD_ALL
+#endif /* RECORD_ALL */
 }
 
 /**********************************************************************/
@@ -840,7 +842,7 @@ long t;
 #ifdef RECORD_ALL
 	sprintf(path,"%s/%s",LOGPATH,"all_cmd");
 	unlink(path);
-#endif RECORD_ALL
+#endif /* RECORD_ALL */
 #ifndef WIN32
 	kill(getpid(), 9);
 #endif

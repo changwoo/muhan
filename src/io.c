@@ -8,10 +8,12 @@
  */
 
 #include <stdio.h>
+#include <stdlib.h>
 #include <sys/types.h>
 
 #ifndef WIN32
 
+#include <unistd.h>
 #include <sys/ioctl.h>
 #include <sys/socket.h>
 #include <sys/signal.h>
@@ -633,7 +635,7 @@ extern void vprint(int fd, char *fmt, va_list ap)
 	if(!fmt2)
 		merror("print", FATAL);
 
-        pmsg = &msg;
+        pmsg = msg;
 
 	/* Check for %m, %M, %i and %I and modify arguments as necessary */
 	do {
@@ -1286,7 +1288,7 @@ void reap_children()
 	long t;
 
 	t = time(0);
-	strcpy(timestr, (char *)ctime(&t));
+	strcpy(timestr, ctime(&t));
 	timestr[strlen(timestr)-1] = 0;
 
 	while(Deadchildren > 0) {

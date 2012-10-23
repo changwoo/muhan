@@ -9,12 +9,13 @@
 
 #include "mstruct.h"
 #include "mextern.h"
+#include <stdlib.h>
+#include <string.h>
+#include <time.h>
 
 #ifndef WIN32
 
 #include <sys/time.h>
-#else
-#include <time.h>
 
 #endif
 

@@ -10,9 +10,12 @@
 
 #include "mstruct.h"
 #include "mextern.h"
+#include <stdlib.h>
+#include <string.h>
 #include <stdio.h>
 #include <sys/types.h>
 #include <stdarg.h>
+#include <time.h>
 
 #ifndef WIN32
 #else
@@ -494,7 +497,7 @@ long 	exp;
 int dec_daily(dly_ptr)
 struct daily	*dly_ptr;
 {
-	long		t;
+	time_t		t;
 	struct tm	*tm, time1, time2;
 
 	t = time(0);
@@ -502,7 +505,8 @@ struct daily	*dly_ptr;
 
 	time1 = *tm;
 
-	tm = localtime(&dly_ptr->ltime);
+        t = (time_t) dly_ptr->ltime;
+	tm = localtime(&t);
 
 	time2 = *tm;
 
@@ -593,7 +597,7 @@ void log_dmcmd(char *fmt, ...)
 	lseek(fd, 0L, 2);
 
 	t=time(0);
-	strcpy(str2,(char *)ctime(&t));
+	strcpy(str2,ctime(&t));
 	str2[strlen(str2)-1] = 0;
 	strcat(str2," : ");
 	va_start(ap, fmt);

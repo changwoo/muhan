@@ -9,6 +9,9 @@
 
 #include "mstruct.h"
 #include "mextern.h"
+#include <stdlib.h>
+#include <string.h>
+#include <time.h>
 
 extern char *ply_titles[PMAX];
 
@@ -52,7 +55,7 @@ creature	*ply_ptr;
     else if(ply_ptr->class >= DM || ply_ptr->class ==0) {
         /* 불법 아이디 : 직업 이상 */
 	    t = time(0);
-	    strcpy(str, (char *)ctime(&t));
+	    strcpy(str, ctime(&t));
     	str[strlen(str)-1] = 0;
         log_f("%s : ### %s 불법아이디(직업=%d)\n",str,
             ply_ptr->name,ply_ptr->class);
@@ -90,7 +93,7 @@ creature	*ply_ptr;
         }
 
 	t = time(0);
-	strcpy(str, (char *)ctime(&t));
+	strcpy(str, ctime(&t));
 	str[strlen(str)-1] = 0;
                 log_f("%s: %s (%s)님이 들어옴\n", str, ply_ptr->name,
 			Ply[ply_ptr->fd].io->address);
@@ -328,7 +331,7 @@ creature	*ply_ptr;
                 all_broad_time=time(0);
         }
       t = time(0);
-      strcpy(str, (char *)ctime(&t));
+      strcpy(str, ctime(&t));
       str[strlen(str)-1] = 0;
 	if(!F_ISSET(ply_ptr, SUICD)) {
             log_f("%s: %s님이 나감\n", str, ply_ptr->name);

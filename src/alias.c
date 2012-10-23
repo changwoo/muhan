@@ -1,5 +1,7 @@
 /* 줄임말 , 칭호 */
 
+#include <stdlib.h>
+#include <string.h>
 #include <string.h>
 #include <ctype.h>
 #include "mstruct.h"

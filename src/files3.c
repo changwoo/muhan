@@ -9,6 +9,7 @@
 
 #include "mstruct.h"
 #include "mextern.h"
+#include <stdlib.h>
 #include <string.h>
 #include <ctype.h>
 
@@ -27,7 +28,8 @@ char	*buf;
 object 	*obj_ptr;
 char 	perm_only;
 {
-	int 	n, cnt, cnt2=0, error=0;
+	int 	n, error=0;
+        int32_t cnt, cnt2 = 0;
 	char	*bufstart;
 	otag	*op;
 
@@ -36,9 +38,9 @@ char 	perm_only;
 	memcpy(buf, obj_ptr, sizeof(object));
 	buf += sizeof(object);
 	
-	cnt = count_obj(obj_ptr, perm_only);
-	memcpy(buf, &cnt, sizeof(int));
-	buf += sizeof(int);
+	cnt = (int32_t) count_obj(obj_ptr, perm_only);
+	memcpy(buf, &cnt, sizeof(int32_t));
+	buf += sizeof(int32_t);
 
 	if(cnt > 0) {
 		op = obj_ptr->first_obj;
@@ -78,7 +80,8 @@ char		*buf;
 creature 	*crt_ptr;
 char 		perm_only;
 {
-	int 	n, cnt, cnt2=0, error=0;
+	int 	n, error=0;
+        int32_t cnt, cnt2 = 0;
 	char	*bufstart;
 	otag	*op;
 
@@ -88,8 +91,8 @@ char 		perm_only;
 	buf += sizeof(creature);
 
 	cnt = count_inv(crt_ptr, perm_only);
-	memcpy(buf, &cnt, sizeof(int));
-	buf += sizeof(int);
+	memcpy(buf, &cnt, sizeof(int32_t));
+	buf += sizeof(int32_t);
 
 	if(cnt > 0) {
 		op = crt_ptr->first_obj;
@@ -126,7 +129,8 @@ int read_obj_from_mem(buf, obj_ptr)
 char	*buf;
 object 	*obj_ptr;
 {
-	int 		n, cnt, error=0;
+	int 		n, error=0;
+        int32_t		cnt;
 	char		*bufstart;
 	otag		*op;
 	otag		**prev;
@@ -144,8 +148,8 @@ object 	*obj_ptr;
 	if(obj_ptr->shotscur > obj_ptr->shotsmax)
 		obj_ptr->shotscur = obj_ptr->shotsmax;
 
-	memcpy(&cnt, buf, sizeof(int));
-	buf += sizeof(int);
+	memcpy(&cnt, buf, sizeof(int32_t));
+	buf += sizeof(int32_t);
 
 	prev = &obj_ptr->first_obj;
 	while(cnt > 0) {
@@ -190,7 +194,8 @@ int read_crt_from_mem(buf, crt_ptr)
 char		*buf;
 creature 	*crt_ptr;
 {
-	int 		n, cnt, error=0;
+	int 		n, error=0;
+        int32_t		cnt;
 	char		*bufstart;
 	otag		*op;
 	otag		**prev;
@@ -213,8 +218,8 @@ creature 	*crt_ptr;
 	if(crt_ptr->hpcur > crt_ptr->hpmax)
 		crt_ptr->hpcur = crt_ptr->hpmax;
 
-	memcpy(&cnt, buf, sizeof(int));
-	buf += sizeof(int);
+	memcpy(&cnt, buf, sizeof(int32_t));
+	buf += sizeof(int32_t);
 
 	prev = &crt_ptr->first_obj;
 	while(cnt > 0) {

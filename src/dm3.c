@@ -9,6 +9,9 @@
 
 #include "mstruct.h"
 #include "mextern.h"
+#include <stdlib.h>
+#include <string.h>
+#include <unistd.h>
 
 /**********************************************************************/
 /*				dm_set				      */

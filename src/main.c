@@ -11,6 +11,7 @@
 #include "mstruct.h"
 #include "mextern.h"
 #include <time.h>
+#include <stdlib.h>
 #define SCHEDPORT  4000
 
 int Port;
@@ -32,7 +33,7 @@ char	*argv[];
 #ifdef SCHED
 	if(argc == 1)
 		Port = schedule_g();
-#endif SCHED
+#endif /* SCHED */
 	
 #ifndef DEBUG
 #ifndef WIN32
@@ -80,7 +81,7 @@ char	*argv[];
 
 #ifdef RECORD_ALL
 	mvc_log();
-#endif RECORD_ALL
+#endif /* RECORD_ALL */
 	{
 	 long c;
 	 c = time(0);

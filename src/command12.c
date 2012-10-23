@@ -4,6 +4,8 @@
 
 #include "mstruct.h"
 #include "mextern.h"
+#include <string.h>
+#include <stdlib.h>
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <time.h>
@@ -133,7 +135,7 @@ cmd *cmnd;
 	}
 
 	t = time(0);
-	strcpy(str, (char *)ctime(&t));
+	strcpy(str, ctime(&t));
 	str[strlen(str)-1] = 0;
 
 	write(fp, str, strlen(str));

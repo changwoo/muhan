@@ -10,6 +10,8 @@
 
 #include "mstruct.h"
 #include "mextern.h"
+#include <string.h>
+#include <stdlib.h>
 
 extern long all_broad_time;
 

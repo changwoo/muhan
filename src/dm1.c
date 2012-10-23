@@ -9,6 +9,8 @@
 
 #include "mstruct.h"
 #include "mextern.h"
+#include <stdlib.h>
+#include <string.h>
 
 int dm_save_all_ply(ply_ptr,cmnd)
 creature *ply_ptr;

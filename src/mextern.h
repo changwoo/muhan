@@ -9,6 +9,7 @@
  */
 
 #include <stdio.h>
+#include <stdarg.h>
 
 #ifndef WIN32
 
@@ -136,6 +137,7 @@ extern void	sock_init(), sock_loop(), accept_connect(), output_buf(),
 		waiting(), child_died(), reap_children();
 
 extern void print(int fd, char *fmt, ...);
+extern void vprint(int fd, char *fmt, va_list ap);
 extern void broadcast(char *fmt, ...);
 extern void broadcast2(char *fmt, ...);
 extern void broadcast_all(char *fmt, ...);

@@ -9,6 +9,8 @@
 
 #include "mstruct.h"
 #include "mextern.h"
+#include <string.h>
+#include <stdlib.h>
 
 /**********************************************************************/
 /*				count_obj			      */
@@ -55,8 +57,8 @@ char 	perm_only;
 		merror("write_obj", FATAL);
 	
 	cnt = count_obj(obj_ptr, perm_only);
-	n = write(fd, &cnt, sizeof(int));
-	if(n < sizeof(int))
+	n = write(fd, &cnt, sizeof(int32_t));
+	if(n < sizeof(int32_t))
 		merror("write_obj", FATAL);
 
 	if(cnt > 0) {
@@ -133,8 +135,8 @@ char 		perm_only;
 		merror("write_crt", FATAL);
 
 	cnt = count_inv(crt_ptr, perm_only);
-	n = write(fd, &cnt, sizeof(int));
-	if(n < sizeof(int))
+	n = write(fd, &cnt, sizeof(int32_t));
+	if(n < sizeof(int32_t))
 		merror("write_crt", FATAL);
 
 	if(cnt > 0) {
@@ -257,7 +259,8 @@ int 	fd;
 room 	*rom_ptr;
 char 	perm_only;
 {
-	int 	n, cnt, error=0;
+	int 	n, error=0;
+	int32_t cnt;
 	xtag	*xp;
 	ctag	*cp;
 	otag	*op;
@@ -268,8 +271,8 @@ char 	perm_only;
 		merror("write_rom", FATAL);
 
 	cnt = count_ext(rom_ptr);
-	n = write(fd, &cnt, sizeof(int));
-	if(n < sizeof(int))
+	n = write(fd, &cnt, sizeof(int32_t));
+	if(n < sizeof(int32_t))
 		merror("write_rom", FATAL);
 
 	xp = rom_ptr->first_ext;
@@ -281,8 +284,8 @@ char 	perm_only;
 	}
 
 	cnt = count_mon(rom_ptr, perm_only);
-	n = write(fd, &cnt, sizeof(int));
-	if(n < sizeof(int))
+	n = write(fd, &cnt, sizeof(int32_t));
+	if(n < sizeof(int32_t))
 		merror("write_rom", FATAL);
 
 	cp = rom_ptr->first_mon;
@@ -294,8 +297,8 @@ char 	perm_only;
 	}
 
 	cnt = count_ite(rom_ptr, perm_only);
-	n = write(fd, &cnt, sizeof(int));
-	if(n < sizeof(int))
+	n = write(fd, &cnt, sizeof(int32_t));
+	if(n < sizeof(int32_t))
 		merror("write_rom", FATAL);
 
 op = rom_ptr->first_obj;
@@ -316,8 +319,8 @@ op = rom_ptr->first_obj;
 		cnt = 0;
 	else
 		cnt = strlen(rom_ptr->short_desc) + 1;
-	n = write(fd, &cnt, sizeof(int));
-	if(n < sizeof(int))
+	n = write(fd, &cnt, sizeof(int32_t));
+	if(n < sizeof(int32_t))
 		merror("write_rom", FATAL);
 
 	if(cnt) {
@@ -330,8 +333,8 @@ op = rom_ptr->first_obj;
 		cnt = 0;
 	else
 		cnt = strlen(rom_ptr->long_desc) + 1;
-	n = write(fd, &cnt, sizeof(int));
-	if(n < sizeof(int))
+	n = write(fd, &cnt, sizeof(int32_t));
+	if(n < sizeof(int32_t))
 		merror("write_rom", FATAL);
 
 	if(cnt) {
@@ -344,8 +347,8 @@ op = rom_ptr->first_obj;
 		cnt = 0;
 	else
 		cnt = strlen(rom_ptr->obj_desc) + 1;
-	n = write(fd, &cnt, sizeof(int));
-	if(n < sizeof(int))
+	n = write(fd, &cnt, sizeof(int32_t));
+	if(n < sizeof(int32_t))
 		merror("write_rom", FATAL);
 
 	if(cnt) {
@@ -389,7 +392,7 @@ object 	*obj_ptr;
 		obj_ptr->shotscur = obj_ptr->shotsmax;
 
 	n = read(fd, &cnt, sizeof(int32_t));
-	if(n < sizeof(int)) {
+	if(n < sizeof(int32_t)) {
 		error = 1;
 		cnt = 0;
 	}
@@ -458,7 +461,7 @@ creature 	*crt_ptr;
 		crt_ptr->hpcur = crt_ptr->hpmax;
 
 	n = read(fd, &cnt, sizeof(int32_t));
-	if(n < sizeof(int)) {
+	if(n < sizeof(int32_t)) {
 		error = 1;
 		cnt = 0;
 	}
@@ -562,7 +565,7 @@ room 	*rom_ptr;
 	/* Read the monsters */
 
 	n = read(fd, &cnt, sizeof(int32_t));
-	if(n < sizeof(int)) {
+	if(n < sizeof(int32_t)) {
 		error = 1;
 		cnt = 0;
 	}
@@ -592,7 +595,7 @@ room 	*rom_ptr;
 	/* Read the items */
 
 	n = read(fd, &cnt, sizeof(int32_t));
-	if(n < sizeof(int)) {
+	if(n < sizeof(int32_t)) {
 		error = 1;
 		cnt = 0;
 	}
@@ -622,7 +625,7 @@ room 	*rom_ptr;
 	/* Read the descriptions */
 
 	n = read(fd, &cnt, sizeof(int32_t));
-	if(n < sizeof(int)) {
+	if(n < sizeof(int32_t)) {
 		error = 1;
 		cnt = 0;
 	}
@@ -640,7 +643,7 @@ room 	*rom_ptr;
 	}
 
 	n = read(fd, &cnt, sizeof(int32_t));
-	if(n < sizeof(int)) {
+	if(n < sizeof(int32_t)) {
 		error = 1;
 		cnt = 0;
 	}
@@ -658,7 +661,7 @@ room 	*rom_ptr;
 	}
 
 	n = read(fd, &cnt, sizeof(int32_t));
-	if(n < sizeof(int)) {
+	if(n < sizeof(int32_t)) {
 		error = 1;
 		cnt = 0;
 	}

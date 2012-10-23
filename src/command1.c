@@ -141,7 +141,7 @@ char file[80];
                                               pass_num[fd]++;
 						if(str[0]==0 || pass_num[fd] >= 3) {
     							t = time(0);
-							strcpy(str3, (char *)ctime(&t));
+							strcpy(str3, ctime(&t));
 							str3[strlen(str3)-1] = 0;
 							log_fl(str3, Ply[fd].ply->name);
                                                         scwrite(fd,"접속을 끊습니다.\n\n",18);
@@ -166,7 +166,7 @@ char file[80];
 				{
                                                 scwrite(fd, "Player nolonger exits!\n", 23);
 						t = time(0);
-						strcpy(str2, (char *)ctime(&t));
+						strcpy(str2, ctime(&t));
 						str2[strlen(str2)-1] = 0;
 						logn("sui_crash","%s: %s (%s) 는 자살하였습니다.\n",
 								str2, Ply[fd].ply->name, Ply[fd].io->address);

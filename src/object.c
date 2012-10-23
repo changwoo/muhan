@@ -9,6 +9,8 @@
 
 #include "mstruct.h"
 #include "mextern.h"
+#include <stdlib.h>
+#include <string.h>
 
 int check_event_obj(crt_ptr)
 creature *crt_ptr;

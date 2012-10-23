@@ -7,6 +7,8 @@
 
 #include "mstruct.h"
 #include "mextern.h"
+#include <string.h>
+#include <stdlib.h>
 
 /***********************************************************************/
 /*                              room_vigor(전회복)                        */

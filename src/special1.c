@@ -9,6 +9,8 @@
 
 #include "mstruct.h"
 #include "mextern.h"
+#include <stdlib.h>
+#include <string.h>
 
 int combo_box();
 int AT_WAR, CALLWAR1, CALLWAR2;

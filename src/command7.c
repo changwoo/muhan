@@ -7,6 +7,7 @@
  *
  */
 #include <stdlib.h>
+#include <string.h>
 #include "mstruct.h"
 #include "mextern.h"
 extern long all_broad_time;

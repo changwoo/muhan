@@ -9,6 +9,7 @@
 
 #include "mstruct.h"
 #include "mextern.h"
+#include <stdlib.h>
 
 #ifdef WIN32
 #include <fcntl.h>
